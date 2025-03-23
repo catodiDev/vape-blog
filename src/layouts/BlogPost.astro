@@ -1,0 +1,67 @@
+---
+import Layout from './Layout.astro';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  frontmatter: CollectionEntry<'blog'>['data'];
+  slug: string;
+}
+
+const { frontmatter, slug } = Astro.props;
+---
+
+<Layout title={frontmatter.title}>
+  <article>
+    <div class="relative h-[400px] w-full">
+      <img 
+        src={frontmatter.imageUrl} 
+        alt={frontmatter.title}
+        class="w-full h-full object-cover"
+        transition:name={`image-${slug}`}
+      />
+      <div class="absolute inset-0 bg-gradient-to-b from-black/50 to-black/80"></div>
+    </div>
+
+    <div class="max-w-3xl mx-auto px-4 py-8">
+      <header class="mb-8">
+        <div class="flex items-center gap-4 mb-4">
+          <span class="px-3 py-1 bg-gray-100 rounded-full text-sm text-gray-600">
+            {frontmatter.category}
+          </span>
+          <time datetime={frontmatter.pubDate.toISOString()} class="text-sm text-gray-500">
+            {frontmatter.pubDate.toLocaleDateString('es-ES', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            })}
+          </time>
+        </div>
+        <h1 class="text-4xl font-bold text-gray-900 mb-4">
+          {frontmatter.title}
+        </h1>
+        <p class="text-xl text-gray-600">
+          {frontmatter.description}
+        </p>
+        <div class="mt-4 flex items-center gap-2">
+          <span class="text-sm text-gray-500">Por {frontmatter.author}</span>
+          {frontmatter.tags.length > 0 && (
+            <div class="flex gap-2">
+              {frontmatter.tags.map((tag: string) => (
+                <a 
+                  href={`/tags/${tag}`} 
+                  class="text-sm text-primary hover:text-primary/80 transition-colors"
+                >
+                  #{tag}
+                </a>
+              ))}
+            </div>
+          )}
+        </div>
+      </header>
+
+      <div class="prose prose-lg max-w-none">
+        <slot />
+      </div>
+    </div>
+  </article>
+</Layout> 

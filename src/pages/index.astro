@@ -1,11 +1,101 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
+import BlogCard from '../components/BlogCard.astro';
+import { getCollection, type CollectionEntry } from 'astro:content';
+
+const posts = await getCollection('blog', ({ data }) => {
+	return import.meta.env.PROD ? !data.draft : true;
+});
+
+// Ordenar posts por fecha
+const sortedPosts = posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
 // Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
 // Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
 ---
 
-<Layout>
-	<Welcome />
+<Layout title="Mi Blog - Últimos Posts">
+	<div class="space-y-12">
+		<section class="text-center py-16 px-4 bg-black rounded-2xl text-white relative overflow-hidden">
+			<div class="absolute inset-0 bg-gradient-to-b from-black/50 to-black/80 z-10"></div>
+			<div class="relative z-20">
+				<h1 class="text-4xl md:text-5xl font-bold mb-4">
+					Bienvenido a Mi Blog
+				</h1>
+				<p class="text-lg md:text-xl text-gray-200 max-w-2xl mx-auto">
+					Explora los últimos artículos sobre desarrollo web, tecnología y más.
+				</p>
+			</div>
+			<div class="absolute inset-0 bg-[url('https://picsum.photos/1920/1080')] bg-cover bg-center opacity-20"></div>
+		</section>
+
+		<section>
+			<h2 class="text-3xl font-bold text-gray-900 mb-8">
+				Últimos Posts
+			</h2>
+			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+				{sortedPosts.map((post) => (
+					<BlogCard
+						title={post.data.title}
+						description={post.data.description}
+						date={post.data.pubDate.toISOString()}
+						imageUrl={post.data.imageUrl}
+						category={post.data.category}
+						slug={post.slug}
+					/>
+				))}
+			</div>
+		</section>
+	</div>
 </Layout>
+
+<style>
+	.hero {
+		text-align: center;
+		padding: 4rem 0;
+		background: linear-gradient(to right, #4f46e5, #7c3aed);
+		color: white;
+		border-radius: 1rem;
+		margin-bottom: 3rem;
+	}
+
+	.hero h1 {
+		font-size: 2.5rem;
+		margin-bottom: 1rem;
+	}
+
+	.hero p {
+		font-size: 1.25rem;
+		opacity: 0.9;
+	}
+
+	.latest-posts h2 {
+		font-size: 2rem;
+		margin-bottom: 2rem;
+		color: var(--text-color);
+	}
+
+	.posts-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+		gap: 2rem;
+	}
+
+	@media (max-width: 768px) {
+		.hero {
+			padding: 2rem 0;
+		}
+
+		.hero h1 {
+			font-size: 2rem;
+		}
+
+		.hero p {
+			font-size: 1rem;
+		}
+
+		.posts-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>
