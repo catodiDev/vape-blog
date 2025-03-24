@@ -24,9 +24,22 @@ const { title, description = "Blog personal", showHero = false } = Astro.props;
 		<ViewTransitions />
 	</head>
 	<body class="min-h-screen bg-[#fdf6f0]">
-		<header class="fixed top-0 left-0 right-0 bg-transparent z-[60]">
+		<header class="fixed top-0 left-0 right-0 bg-transparent md:bg-transparent bg-white/80 backdrop-blur-sm z-[60]">
 			<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 				<div class="flex items-center h-20">
+					<!-- Botón de retroceso (solo en móvil, excepto en homepage) -->
+					{Astro.url.pathname !== '/' && (
+						<button
+							onclick="history.back()"
+							class="md:hidden text-gray-500 hover:text-gray-700 p-2 rounded-lg hover:bg-gray-100/50 transition-colors mr-2"
+							aria-label="Volver atrás"
+						>
+							<svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+							</svg>
+						</button>
+					)}
+
 					<!-- Logo (centrado en móvil, izquierda en desktop) -->
 					<div class="flex-1 flex justify-center md:justify-start">
 						<a href="/" class="flex items-center">
@@ -109,7 +122,17 @@ const { title, description = "Blog personal", showHero = false } = Astro.props;
 				const menuIcon = document.getElementById('menuIcon');
 				const closeIcon = document.getElementById('closeIcon');
 
-				if (!mobileMenuBtn || !mobileMenu || !menuIcon || !closeIcon) return;
+				if (!mobileMenuBtn || !mobileMenu || !menuIcon || !closeIcon) {
+					console.log('Elementos del menú no encontrados, reintentando...');
+					return;
+				}
+
+				// Remover event listeners anteriores si existen
+				mobileMenuBtn.removeEventListener('click', toggleMenu);
+				const menuLinks = mobileMenu.querySelectorAll('a');
+				menuLinks.forEach(link => {
+					link.removeEventListener('click', closeMenu);
+				});
 
 				function toggleMenu() {
 					const isExpanded = mobileMenuBtn.getAttribute('aria-expanded') === 'true';
@@ -120,17 +143,18 @@ const { title, description = "Blog personal", showHero = false } = Astro.props;
 					closeIcon.classList.toggle('hidden');
 				}
 
+				function closeMenu() {
+					if (mobileMenuBtn.getAttribute('aria-expanded') === 'true') {
+						toggleMenu();
+					}
+				}
+
 				// Event listeners
 				mobileMenuBtn.addEventListener('click', toggleMenu);
 
 				// Cerrar menú al hacer clic en los enlaces
-				const menuLinks = mobileMenu.querySelectorAll('a');
 				menuLinks.forEach(link => {
-					link.addEventListener('click', () => {
-						if (mobileMenuBtn.getAttribute('aria-expanded') === 'true') {
-							toggleMenu();
-						}
-					});
+					link.addEventListener('click', closeMenu);
 				});
 			}
 
@@ -138,7 +162,16 @@ const { title, description = "Blog personal", showHero = false } = Astro.props;
 			initMobileMenu();
 
 			// Reinicializar el menú después de las transiciones de página de Astro
-			document.addEventListener('astro:page-load', initMobileMenu);
+			document.addEventListener('astro:page-load', () => {
+				console.log('Página cargada, reinicializando menú...');
+				initMobileMenu();
+			});
+
+			// Reinicializar el menú cuando el DOM esté listo
+			document.addEventListener('DOMContentLoaded', () => {
+				console.log('DOM cargado, reinicializando menú...');
+				initMobileMenu();
+			});
 		</script>
 	</body>
 </html>
