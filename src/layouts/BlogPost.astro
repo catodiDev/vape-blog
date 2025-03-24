@@ -12,7 +12,7 @@ const { frontmatter, slug } = Astro.props;
 
 <Layout title={frontmatter.title}>
   <article>
-    <div class="relative h-[400px] w-full">
+    <div class="relative h-[400px] w-full mt-20">
       <img 
         src={frontmatter.imageUrl} 
         alt={frontmatter.title}
@@ -25,9 +25,12 @@ const { frontmatter, slug } = Astro.props;
     <div class="max-w-3xl mx-auto px-4 py-8">
       <header class="mb-8">
         <div class="flex items-center gap-4 mb-4">
-          <span class="px-3 py-1 bg-gray-100 rounded-full text-sm text-gray-600">
+          <a 
+            href={`/category/${frontmatter.category.toLowerCase()}`}
+            class="px-3 py-1 bg-gray-100 rounded-full text-sm text-gray-600 hover:bg-gray-200 transition-colors"
+          >
             {frontmatter.category}
-          </span>
+          </a>
           <time datetime={frontmatter.pubDate.toISOString()} class="text-sm text-gray-500">
             {frontmatter.pubDate.toLocaleDateString('es-ES', {
               year: 'numeric',

@@ -7,7 +7,7 @@ category: "Desarrollo Web"
 author: "Didier CT"
 tags: ["cursor", "web", "desarrollo", "tutorial"]
 ---
-# 🚀 Cursor AI: El Editor de Código con Inteligencia Artificial que Está Revolucionando el Desarrollo de Software
+## 🚀 Cursor AI: El Editor de Código con Inteligencia Artificial que Está Revolucionando el Desarrollo de Software
 
 Cursor AI es un editor de código moderno impulsado por inteligencia artificial, diseñado para acelerar drásticamente el flujo de trabajo de los desarrolladores. Construido sobre la base de Visual Studio Code, Cursor integra modelos avanzados de IA directamente en el entorno de programación para ofrecer sugerencias inteligentes, refactorización automatizada y asistencia contextualizada de primer nivel.
 
